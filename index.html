@@ -266,7 +266,7 @@ input[type=range]{accent-color:#6d8bff}
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
 <sc-if value="{{rem.canIcs}}" hint-placeholder-val="{{ true }}"><button type="button" class="k-btn" onClick="{{rem.ics}}" style="min-height: 48px; padding: 0 18px; border-radius: 10px; border: 0; background: var(--accent-btn); color: #FFFFFF; font-size: 16px; font-weight: 700">Add to my calendar</button></sc-if>
-<a class="k-btn" href="{{rem.google}}" target="_blank" rel="noopener" onClick="{{rem.googleGo}}" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px; border-radius: 10px; border: 2px solid var(--accent); background: var(--surface); color: var(--accent); font-size: 16px; font-weight: 700; text-decoration: none">Use Google Calendar</a>
+<a class="k-btn" href="{{rem.google}}" target="_blank" rel="noopener" onClick="{{rem.googleGo}}" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px; border-radius: 10px; border: 2px solid var(--accent); background: {{rem.gBg}}; color: {{rem.gFg}}; font-size: 16px; font-weight: 700; text-decoration: none">Use Google Calendar</a>
 </div>
 <sc-if value="{{rem.asked}}" hint-placeholder-val="{{ false }}">
 <div role="status" style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--line2); padding-top: 12px">
@@ -1197,7 +1197,7 @@ input[type=range]{accent-color:#6d8bff}
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
 <sc-if value="{{rem.canIcs}}" hint-placeholder-val="{{ true }}"><button type="button" class="k-btn" onClick="{{rem.ics}}" style="min-height: 48px; padding: 0 18px; border-radius: 10px; border: 0; background: var(--accent-btn); color: #FFFFFF; font-size: 16px; font-weight: 700">Add to my calendar</button></sc-if>
-<a class="k-btn" href="{{rem.google}}" target="_blank" rel="noopener" onClick="{{rem.googleGo}}" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px; border-radius: 10px; border: 2px solid var(--accent); background: var(--surface); color: var(--accent); font-size: 16px; font-weight: 700; text-decoration: none">Use Google Calendar</a>
+<a class="k-btn" href="{{rem.google}}" target="_blank" rel="noopener" onClick="{{rem.googleGo}}" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px; border-radius: 10px; border: 2px solid var(--accent); background: {{rem.gBg}}; color: {{rem.gFg}}; font-size: 16px; font-weight: 700; text-decoration: none">Use Google Calendar</a>
 </div>
 <sc-if value="{{rem.asked}}" hint-placeholder-val="{{ false }}">
 <div role="status" style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--line2); padding-top: 12px">
@@ -3527,13 +3527,16 @@ class Component extends DCLogic {
     }
     var remT = remRound(st.remT || (UI.remind && UI.remind.t) || "18:00");
     var remOwn = !(window.claude && window.claude.use);
+    var remAndroid = false; try { remAndroid = /Android/i.test(navigator.userAgent); } catch (x) {}
     vals.rem = {
       need: !!PROG.codeSet && !UI.remind,
       has: !!UI.remind,
       time: remT, timeLabel: remT,
       label: UI.remind ? ("Every day at " + remTimeLabel(UI.remind.t) + ".") : "Not set yet.",
       setTime: function (e) { var v = e && e.target ? e.target.value : ""; if (v) self.setState({ remT: v }); },
-      canIcs: remOwn,
+      canIcs: remOwn && !remAndroid,
+      gBg: remAndroid ? "var(--accent-btn)" : "var(--surface)",
+      gFg: remAndroid ? "#FFFFFF" : "var(--accent)",
       icsLabel: "Add to my calendar",
       google: remGoogle(remT),
       asked: !!st.remAsked,
