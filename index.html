@@ -1043,9 +1043,11 @@ input[type=range]{accent-color:#6d8bff}
 </div>
 </sc-if>
 
+<sc-if value="{{rs.noPrimary}}" hint-placeholder-val="{{ true }}">
 <div class="k-card" style="background: var(--surface); border: 1px solid var(--line); border-left: 6px solid {{pr.colour}}; border-radius: 12px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between">
 <div><strong>Readiness now {{pr.pct}}%: <span style="color: {{pr.colour}}">{{pr.level}}</span></strong><br><span style="color: var(--ink2); font-size: 15px">Next step: {{pr.nextLabel}}</span></div>
 </div>
+</sc-if>
 <sc-if value="{{rs.hasPrimary}}" hint-placeholder-val="{{ false }}">
 <div class="k-nextstep" style="background: var(--accent-soft); border: 2px solid var(--accent); border-radius: 12px; padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between">
 <div style="flex: 1 1 240px"><div style="font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent)">Next step</div><div style="font-weight: 700; font-size: 19px">{{rs.primaryTitle}}</div></div>
@@ -4077,6 +4079,7 @@ class Component extends DCLogic {
         retake: isDaily ? (dailyPool().n ? startDaily : go({ view: "home" })) : isF ? (quiz.practice ? function () { startFinal(true); } : startFinal) : (isP ? function () { startPart(quiz.sec); } : (isRv ? startReview : function () { startMini(quiz.s); })),
         backToSession: go({ view: "session", s: isF ? si : quiz.s, tab: "tricky" })
       };
+      vals.rs.noPrimary = quiz.mode !== "mini";
       if (quiz.mode === "mini") {
         var nsI = quiz.s + 1;
         vals.rs.hasPrimary = true;
