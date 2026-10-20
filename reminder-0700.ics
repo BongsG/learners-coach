@@ -10,9 +10,7 @@ DTSTART:20261020T070000
 DTEND:20261020T071500
 RRULE:FREQ=DAILY
 SUMMARY:Learners Coach: 10 minutes of study
-DESCRIPTION:Time for your daily review and next step. Tap the Learners Co
- ach icon on your home screen to start (that is where your progress is sav
- ed). No icon yet? Open bongsg.github.io/learners-coach in your browser.
+DESCRIPTION:Daily review and next step. Open the Learners Coach app.
 BEGIN:VALARM
 ACTION:DISPLAY
 DESCRIPTION:Learners Coach: 10 minutes of study

@@ -3173,7 +3173,7 @@ function remFirst(t) {
 }
 function remStamp(d) { return d.getFullYear() + remPad(d.getMonth() + 1) + remPad(d.getDate()) + "T" + remPad(d.getHours()) + remPad(d.getMinutes()) + "00"; }
 var REM_TITLE = "Learners Coach: 10 minutes of study";
-var REM_TEXT = "Time for your daily review and next step. Tap the Learners Coach icon on your home screen to start (that is where your progress is saved). No icon yet? Open bongsg.github.io/learners-coach in your browser.";
+var REM_TEXT = "Daily review and next step. Open the Learners Coach app.";
 function remIcs(t) {
   var d = remFirst(t), e = new Date(d.getTime() + 15 * 60000), now = new Date();
   var u = now.getUTCFullYear() + remPad(now.getUTCMonth() + 1) + remPad(now.getUTCDate()) + "T" + remPad(now.getUTCHours()) + remPad(now.getUTCMinutes()) + "00Z";
@@ -3182,7 +3182,7 @@ function remIcs(t) {
     "DTSTART:" + remStamp(d), "DTEND:" + remStamp(e), "RRULE:FREQ=DAILY",
     "SUMMARY:" + REM_TITLE, "DESCRIPTION:" + REM_TEXT.replace(/[,;]/g, function (c) { return "\\" + c; }),
     "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + REM_TITLE, "TRIGGER:PT0M", "END:VALARM",
-    "END:VEVENT", "END:VCALENDAR"].map(function (ln) { var out = ""; while (ln.length > 73) { out += ln.slice(0, 73) + "\r\n "; ln = ln.slice(73); } return out + ln; }).join("\r\n") + "\r\n";
+    "END:VEVENT", "END:VCALENDAR"].join("\r\n") + "\r\n";
 }
 function remGoogle(t) {
   var d = remFirst(t), e = new Date(d.getTime() + 15 * 60000);
