@@ -3550,11 +3550,8 @@ class Component extends DCLogic {
         try {
           if (ios && hosted) {
             var icsUrl = new URL("reminder-" + remT.replace(":", "") + ".ics", location.href).href;
-            if (window.__K53GH.standalone) {
-              // Home-screen app: open in Safari's own viewer, which shows Add to Calendar
-              var ia = document.createElement("a"); ia.href = icsUrl; ia.target = "_blank"; ia.rel = "noopener"; ia.style.display = "none";
-              document.body.appendChild(ia); ia.click(); setTimeout(function () { try { document.body.removeChild(ia); } catch (x) {} }, 2000);
-            } else window.location.href = icsUrl;
+            // Open the calendar file in place (no separate Safari window)
+            window.location.href = icsUrl;
           }
           else if (ios) { window.location.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(txt); }
           else {
