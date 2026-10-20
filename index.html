@@ -3486,9 +3486,10 @@ class Component extends DCLogic {
     vals.ui.toggleHc = function () { UI.hc = !UI.hc; saveUi(); self.setState({ tick: Date.now() }); };
 
     var TOUR = [
-      { h: "Welcome to Learners Coach", t: "Your licence is set. A few minutes a day gets you ready for the learner's licence test. Here is how it works, in two steps." },
+      { h: "Welcome to Learners Coach", t: "Your licence is set. A few minutes a day gets you ready for the learner's licence test. Here is how it works, in three steps." },
       { h: "1. Press Continue", t: "The Today card always shows what to do next: a session, a mini test or a mock exam. Each session has four short steps: watch, key points, tricky questions, mini test." },
-      { h: "2. Do your daily review", t: "Once you have studied a session, a short review appears each day. Cards you know come back less often; ones you miss come back tomorrow." }
+      { h: "2. Do your daily review", t: "Once you have studied a session, a short review appears each day. Cards you know come back less often; ones you miss come back tomorrow." },
+      { h: "3. Make it yours in Settings", t: "Tap the gear at the top right for bigger text, night mode, an easy-reading font and high contrast. Settings is also where you back up your progress" + (window.__K53GH ? ", download everything for offline use" : "") + " and report a problem." }
     ];
     var tourOn = !UI.tour && !st.tourDone && view === "home" && !!PROG.codeSet;
     var tk = Math.min(st.tourStep || 0, TOUR.length - 1);

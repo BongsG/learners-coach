@@ -1,5 +1,5 @@
-/* Learners Coach service worker. Version 676349631a */
-var VERSION = "676349631a";
+/* Learners Coach service worker. Version fb7a8efe86 */
+var VERSION = "fb7a8efe86";
 var CORE_CACHE = "lc-core-" + VERSION;
 var MEDIA_CACHE = "lc-media-v1";
 var CORE = ["./", "index.html", "support.js", "gh.js", "react.production.min.js", "react-dom.production.min.js", "fonts.css", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "font-bricolage-grotesque-latin-500-normal.woff2", "font-bricolage-grotesque-latin-700-normal.woff2", "font-bricolage-grotesque-latin-800-normal.woff2", "font-barlow-semi-condensed-latin-600-normal.woff2", "font-barlow-semi-condensed-latin-700-normal.woff2", "font-barlow-condensed-latin-700-normal.woff2", "font-source-sans-3-latin-400-normal.woff2", "font-source-sans-3-latin-600-normal.woff2", "font-source-sans-3-latin-700-normal.woff2", "font-ibm-plex-mono-latin-400-normal.woff2", "font-ibm-plex-mono-latin-500-normal.woff2", "font-atkinson-hyperlegible-latin-400-normal.woff2", "font-atkinson-hyperlegible-latin-700-normal.woff2", "img-controls-car-9d76f63e.png", "img-controls-moto-4f0005da.png", "img-signs-b0a9628b.jpg"];
