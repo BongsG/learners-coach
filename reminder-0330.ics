@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Learners Coach//Study reminder//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:learners-coach-daily-reminder@bongsg.github.io
+DTSTAMP:20261020T000000Z
+DTSTART:20261020T033000
+DTEND:20261020T034500
+RRULE:FREQ=DAILY
+SUMMARY:Learners Coach: 10 minutes of study
+DESCRIPTION:Time for your daily review and next step. Open Learners Coach: https://bongsg.github.io/learners-coach/
+URL:https://bongsg.github.io/learners-coach/
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Learners Coach: 10 minutes of study
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -261,8 +261,8 @@ input[type=range]{accent-color:#6d8bff}
 <h2 style="margin: 0; font-family: var(--f-display); font-size: clamp(24px, 6vw, 30px); line-height: 1.15">Set your daily study reminder</h2>
 <p style="margin: 0; color: var(--ink2); max-width: 680px">A few minutes every day beats one long session. Pick a time and save a daily reminder to your phone's calendar. You can change it later in Settings.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
-<label for="k53-rem-home" style="font-weight: 700">Remind me at</label>
-<input id="k53-rem-home" type="time" value="{{rem.time}}" onChange="{{rem.setTime}}" style="min-height: 44px; padding: 0 10px; border-radius: 10px; border: 2px solid var(--edge); background: var(--surface); color: var(--ink); font: inherit; font-size: 17px">
+<label for="k53-rem-home" style="font-weight: 700">Remind me at</label><span style="font-size: 14px; color: var(--muted); flex: 1 1 100%; order: 3">Rounded to the nearest half hour: {{rem.timeLabel}}</span>
+<input id="k53-rem-home" type="time" step="1800" value="{{rem.time}}" onChange="{{rem.setTime}}" style="min-height: 44px; padding: 0 10px; border-radius: 10px; border: 2px solid var(--edge); background: var(--surface); color: var(--ink); font: inherit; font-size: 17px">
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
 <sc-if value="{{rem.canIcs}}" hint-placeholder-val="{{ true }}"><button type="button" class="k-btn" onClick="{{rem.ics}}" style="min-height: 48px; padding: 0 18px; border-radius: 10px; border: 0; background: var(--accent-btn); color: #FFFFFF; font-size: 16px; font-weight: 700">Add to my calendar</button></sc-if>
@@ -1192,8 +1192,8 @@ input[type=range]{accent-color:#6d8bff}
 </div>
 <sc-if value="{{rem.editing}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
-<label for="k53-rem-set" style="font-weight: 700">Remind me at</label>
-<input id="k53-rem-set" type="time" value="{{rem.time}}" onChange="{{rem.setTime}}" style="min-height: 44px; padding: 0 10px; border-radius: 10px; border: 2px solid var(--edge); background: var(--surface); color: var(--ink); font: inherit; font-size: 17px">
+<label for="k53-rem-set" style="font-weight: 700">Remind me at</label><span style="font-size: 14px; color: var(--muted); flex: 1 1 100%; order: 3">Rounded to the nearest half hour: {{rem.timeLabel}}</span>
+<input id="k53-rem-set" type="time" step="1800" value="{{rem.time}}" onChange="{{rem.setTime}}" style="min-height: 44px; padding: 0 10px; border-radius: 10px; border: 2px solid var(--edge); background: var(--surface); color: var(--ink); font: inherit; font-size: 17px">
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
 <sc-if value="{{rem.canIcs}}" hint-placeholder-val="{{ true }}"><button type="button" class="k-btn" onClick="{{rem.ics}}" style="min-height: 48px; padding: 0 18px; border-radius: 10px; border: 0; background: var(--accent-btn); color: #FFFFFF; font-size: 16px; font-weight: 700">Add to my calendar</button></sc-if>
@@ -3190,6 +3190,12 @@ function remGoogle(t) {
     "&dates=" + remStamp(d) + "/" + remStamp(e) + "&recur=" + encodeURIComponent("RRULE:FREQ=DAILY") +
     "&details=" + encodeURIComponent(REM_TEXT);
 }
+// Times snap to the nearest half hour, so each one has a ready-made calendar file on the website (iPhone needs a real file)
+function remRound(t) {
+  var hm = String(t || "18:00").split(":"), m = (+hm[0] || 0) * 60 + (+hm[1] || 0);
+  m = Math.round(m / 30) * 30 % 1440;
+  return remPad(Math.floor(m / 60)) + ":" + remPad(m % 60);
+}
 function remTimeLabel(t) { var hm = String(t || "18:00").split(":"); return remPad(+hm[0]) + ":" + remPad(+hm[1] || 0); }
 
 // ---------- Test date ----------
@@ -3519,12 +3525,12 @@ class Component extends DCLogic {
       vals.gh.offText = ghOff.busy ? ("Downloading: " + ghOff.pct + "%. Keep this page open.") : ghOff.done ? "Everything is downloaded. Films, Isabella's voice and PDFs work with no connection." : ghOff.failed ? "The download stopped. Check your connection and try again." : "The app works offline once it has loaded. Films and Isabella's voice download the first time you play each one. Download them all now if you will study without internet (best on Wi-Fi).";
       vals.gh.dlAll = function () { GH.downloadAll(); };
     }
-    var remT = st.remT || (UI.remind && UI.remind.t) || "18:00";
+    var remT = remRound(st.remT || (UI.remind && UI.remind.t) || "18:00");
     var remOwn = !(window.claude && window.claude.use);
     vals.rem = {
       need: !!PROG.codeSet && !UI.remind,
       has: !!UI.remind,
-      time: remT,
+      time: remT, timeLabel: remT,
       label: UI.remind ? ("Every day at " + remTimeLabel(UI.remind.t) + ".") : "Not set yet.",
       setTime: function (e) { var v = e && e.target ? e.target.value : ""; if (v) self.setState({ remT: v }); },
       canIcs: remOwn,
@@ -3540,14 +3546,16 @@ class Component extends DCLogic {
       ics: function () {
         var txt = remIcs(remT), name = "learners-coach-reminder.ics";
         var ios = false; try { ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1); } catch (x) {}
+        var hosted = !!window.__K53GH && /^https?:$/.test(location.protocol);
         try {
-          if (ios) { window.location.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(txt); }
+          if (ios && hosted) { window.location.href = "reminder-" + remT.replace(":", "") + ".ics"; }
+          else if (ios) { window.location.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(txt); }
           else {
             var bl = new Blob([txt], { type: "text/calendar" }), bu = URL.createObjectURL(bl), ak = document.createElement("a");
             ak.href = bu; ak.download = name; ak.style.display = "none"; document.body.appendChild(ak); ak.click();
             setTimeout(function () { try { document.body.removeChild(ak); URL.revokeObjectURL(bu); } catch (x) {} }, 4000);
           }
-          self.setState({ remAsked: true, remMsg: ios ? "Tap Add All (or Add to Calendar) on the screen that opens." : "Open the downloaded file (learners-coach-reminder.ics) and choose your calendar app to save it." });
+          self.setState({ remAsked: true, remMsg: ios ? "On the calendar screen that opens, tap Add All (or Add to Calendar), then come back here." : "Open the downloaded file (learners-coach-reminder.ics) and choose your calendar app to save it." });
         } catch (x) { self.setState({ remAsked: true, remMsg: "That did not open. Try the Google Calendar button instead." }); }
       },
       googleGo: function () { self.setState({ remAsked: true, remMsg: "Save the event in Google Calendar (it repeats every day), then come back here." }); },
